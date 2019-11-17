@@ -1,5 +1,7 @@
 import random
 import datetime
+import pytz
+from django.utils import timezone
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -64,16 +66,18 @@ class Game(models.Model):
 
     @property
     def game_solved(self):
-        # TODO: add logic to check if game is solved
-        return False
+        mines_and_flagged_cells = self.cells.filter(state=2, mine=True)
+        covered_cells = self.cells.exclude(mine=True).filter(uncovered=False)
+
+        return len(mines_and_flagged_cells) == self.mines and len(covered_cells) == 0
 
     def game_started(self):
         self.state = self.STATE_PLAYING
-        self.started = datetime.datetime.utcnow()
+        self.started = timezone.now()
         self.save()
 
     def game_ended(self):
-        self.finished = datetime.datetime.utcnow()
+        self.finished = timezone.now()
         self.save()
 
     def game_won(self):
@@ -134,7 +138,15 @@ class Game(models.Model):
                 'col': cell.column - 1
             }
         ]
-        return [Cell.objects.get(game=self, row=pos['row'], column=pos['col']) for pos in positions if self._within_board(pos['row'], pos['col'])]
+        cells = []
+        for pos in positions:
+            if self._within_board(pos['row'], pos['col']):
+                try:
+                    cell = Cell.objects.get(game=self, row=pos['row'], column=pos['col'], uncovered=False)
+                    cells.append(cell)
+                except Cell.DoesNotExist as err:
+                    pass
+        return cells
 
     def _count_adjacent_with_mines(self, cell):
         return sum(1 for cell in self._adjacent_cells(cell) if cell.mine)

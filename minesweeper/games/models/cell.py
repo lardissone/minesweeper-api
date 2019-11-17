@@ -6,13 +6,11 @@ class Cell(models.Model):
     COVERED = 0
     QUESTION = 1
     FLAGGED = 2
-    UNCOVERED = 3
-    EXPLODED = 4
+    EXPLODED = 3
     CELL_STATE = (
         (COVERED, 'hidden'),
         (QUESTION, 'question'),
         (FLAGGED, 'flagged'),
-        (UNCOVERED, 'uncovered'),
         (EXPLODED, 'exploded'),
     )
 
@@ -21,22 +19,26 @@ class Cell(models.Model):
     column = models.IntegerField()
     mine = models.BooleanField(default=False)
     state = models.IntegerField(choices=CELL_STATE, default=COVERED)
+    uncovered = models.BooleanField(default=False)
 
     def __repr__(self):
         return 'Cell {},{}'.format(self.row, self.column)
 
     def set_flagged(self):
         self.state = self.FLAGGED if self.state != self.FLAGGED else self.COVERED
+        self.uncovered = True
         self.save()
 
     def set_question(self):
         self.state = self.QUESTION if self.state != self.QUESTION else self.COVERED
+        self.uncovered = True
         self.save()
 
     def set_uncovered(self):
-        self.state = self.UNCOVERED
+        self.uncovered = True
         self.save()
 
     def set_exploded(self):
         self.state = self.EXPLODED
+        self.uncovered = True
         self.save()
