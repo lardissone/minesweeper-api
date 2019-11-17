@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import generics, mixins
@@ -36,10 +37,27 @@ class GameViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         return { 'request': self.request }
 
     def post(self, request, *args, **kwargs):
+        mines = request.data.get('mines')
+        rows = request.data.get('rows')
+        cols = request.data.get('cols')
+        if mines >= rows + cols:
+            raise ValidationError('Mines shouldn\'t be higher than Columns + Rows')
         return self.create(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         game = self.get_object()
+        if game.state == game.STATE_WON or game.state == game.STATE_LOST:
+            raise ValidationError('Game finished')
+        elif game.state == game.STATE_PAUSED:
+            raise ValidationError('Game paused')
+
+        action = request.data.get('action')
+        row = request.data.get('row')
+        col = request.data.get('col')
+        if row is None or col is None or row > game.rows or col > game.cols:
+            raise ValidationError('Invalid cell position')
+
+        game.game_action(row, col, action)
         serializer = GameSerializer(game, context={'request': request}, many=False)
         return Response(serializer.data)
 

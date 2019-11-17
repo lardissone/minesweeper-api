@@ -10,6 +10,7 @@ class CellSerializer(serializers.ModelSerializer):
 
 class GameSerializer(serializers.ModelSerializer):
     cells = CellSerializer(many=True, read_only=True)
+
     class Meta:
         model = Game
         fields = ('name', 'state', 'rows', 'cols', 'mines', 'cells')
