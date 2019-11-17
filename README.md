@@ -10,4 +10,5 @@ API for Minesweeper game.
 ## TODO
 
 - add tests
+- add pause/resume feature
 - add some kind of captcha to avoid massive registrations
