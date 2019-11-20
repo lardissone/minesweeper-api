@@ -1,1 +1,1 @@
-web: gunicorn minesweeper.wsgi --log-file -
+web: gunicorn --chdir minesweeper minesweeper.wsgi:application --log-file -
