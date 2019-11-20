@@ -89,9 +89,9 @@ class Game(models.Model):
         self.game_ended()
 
     def uncover_cell(self, cell):
-        if cell.state == cell.COVERED:
+        if not cell.uncovered:
             cell.set_uncovered()
-            if self._count_adjacent_with_mines(cell) == 0:
+            if cell.value == 0:
                 for c in self._adjacent_cells(cell):
                     self.uncover_cell(c)
 
@@ -166,3 +166,7 @@ def init_game(sender, instance, created, **kwargs):
     for mine in random.sample(cells, instance.mines):
         mine.mine = True
         mine.save()
+    for cell in cells:
+        adj_mines = instance._count_adjacent_with_mines(cell)
+        cell.value = adj_mines
+        cell.save()

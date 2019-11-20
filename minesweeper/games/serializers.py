@@ -6,14 +6,14 @@ from games.models import Game, Cell
 class CellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cell
-        fields = ('id', 'row', 'column', 'mine', 'state')
+        fields = ('id', 'row', 'column', 'mine', 'state', 'uncovered', 'value')
 
 class GameSerializer(serializers.ModelSerializer):
     cells = CellSerializer(many=True, read_only=True)
 
     class Meta:
         model = Game
-        fields = ('name', 'state', 'started', 'finished', 'rows', 'cols', 'mines', 'cells')
+        fields = ('id', 'name', 'state', 'started', 'finished', 'rows', 'cols', 'mines', 'cells')
         read_only_fields = ('player', 'state', 'started', 'finished', 'cells')
 
 
