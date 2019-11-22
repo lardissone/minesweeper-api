@@ -5,7 +5,7 @@ API for Minesweeper game.
 ## Links
 
 - **API**: [https://lardissone-minesweeper-api.herokuapp.com/api/](https://lardissone-minesweeper-api.herokuapp.com/api/)
-- **Front End**: [https://minesweeper-web.lardissone.now.sh/](https://minesweeper-web.lardissone.now.sh/)
+- **Front End**: [Demo](https://minesweeper-web.lardissone.now.sh/) - [Source](https://github.com/lardissone/minesweeper-web)
 - **API Documentation (Swagger)**: [https://lardissone-minesweeper-api.herokuapp.com/api/docs/](https://lardissone-minesweeper-api.herokuapp.com/api/docs/)
 - **API Documentation (ReDoc)**: [https://lardissone-minesweeper-api.herokuapp.com/api/docs/redoc](https://lardissone-minesweeper-api.herokuapp.com/api/docs/redoc)
 
